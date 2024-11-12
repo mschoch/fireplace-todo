@@ -10,7 +10,7 @@
       function todoApp() {
         const actorTag = Math.random().toString(36).substring(2, 7)
         const { fireproof, index } = Fireproof
-        const { connect } = FireproofConnect
+        const { connect } = Connect
 
         let dbName
         let db
@@ -36,15 +36,10 @@
             dbName = name
             db = fireproof(name)
 
-            const s3conf = {
-              upload: "https://" + window.location.hostname + '/api/upload',
-              download: "https://" + window.location.hostname + '/api/download/',
-              websocket: "wss://" + window.location.hostname + '/api/websocket'
-            }
-            cx = connect.aws(db, s3conf);
+            cx = connect(db, '', 'https://' + window.location.hostname);
+            console.log("connected", cx);
 
-
-            cx.ready.then(async () => {
+            cx.loaded.then(async () => {
               const span = document.querySelector('#cxInfo')
               span.innerText = `📡 ${cx.name}`
             })
@@ -57,7 +52,7 @@
             if (changes.clock.length > 0) {
               input.disabled = false
             } else {
-              cx.ready.then(async () => {
+              cx.loaded.then(async () => {
                 input.disabled = false
               })
             }
